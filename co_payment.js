@@ -72,7 +72,7 @@ window.addEventListener("load", function () {
       document.getElementById("cvc").oninput = validateCVC
 
 });
-
+//Runs a function that checks all of the required info by calling many other functions
 function runSubmit() {
       validateName();
       validateCredit();
@@ -89,11 +89,11 @@ function validateCVC() {
       if (cardCVC.validity.valueMissing) {
             cardCVC.setCustomValidity("Enter your CVC number");
       } else if ((creditCard === "amex") && (/^\d{4}$/.test(cardCVC.value))) {
-
-      } else if () {
-
+            cardCVC.setCustomValidity("Enter a 4-digit CVC number");
+      } else if ((creditCard != "amex") && (/^\d{3}$/.test(cardCVC.value) === false)) {
+            cardCVC.setCustomValidity("Enter a 3-digit CVC number")
       } else {
-
+            cardCVC.setCustomValidity("")
       }
 
 }
@@ -105,7 +105,7 @@ function validateMonth() {
       if (cardMonth.selectedIndex === 0) {
             cardMonth.setCustomValidity("Select the expiration month");
       } else {
-            cardMonth.setCustomValidity("")
+            cardMonth.setCustomValidity("");
       }
 }
 
@@ -114,7 +114,7 @@ function validateYear() {
       if (cardYear.selectedIndex === 0) {
             cardYear.setCustomValidity("Select the expiration year");
       } else {
-            cardYear.setCustomValidity("")
+            cardYear.setCustomValidity("");
       }
 }
 
@@ -124,6 +124,8 @@ function validateNumber() {
             cardNumber.setCustomValidity("Enter your card number as it appears on your card");
       } else if (cardNumber.validity.patternMismatch) {
             cardNumber.setCustomValidity("Enter a valid card number");
+      } else if (luhn(cardNumber.value) === false) {
+            cardNumber.setCustomValidity("Enter a legitimate card number")
       } else {
             cardNumber.setCustomValidity("")
       }
@@ -143,6 +145,33 @@ function validateName() {
       if (cardName.validity.valueMissing) {
             cardName.setCustomValidity("Enter your name as it appears on your card");
       } else {
-            cardName.setCustomValidity("")
+            cardName.setCustomValidity("");
       }
+}
+
+function sumDigits(numStr) {
+      var digitTotal = 0;
+      for (var i = 0; i < numStr.length; i++) {
+            digitTotal += parseInt(numStr.charAt(i));
+      }
+      return digitTotal;
+}
+
+function luhn(idNum) {
+      var string1 = "";
+      var string2 = "";
+
+      //Retrieve the odd numbered digits
+      for (var i = idNum.length - 2; i >= 0; i -= 2) {
+            string1 += idNum.charAt(i);
+
+      }
+
+      //Retrieve the even number digits and double them
+      for (var i = idNum.length - 1; i >= 0; i -= 2) {
+            string2 += idNum.charAt(i);
+
+      }
+      //Return whether the sum of the digits is divisible by 10
+      return sumDigits(string1 + string2) % 10 === 0;
 }
